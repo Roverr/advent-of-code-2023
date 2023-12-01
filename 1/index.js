@@ -13,9 +13,10 @@ const result = strings.reduce((result, word) => {
       if (Number.isNaN(n)) {
         continue;
       }
+    } else {
+      counter.reset();
     }
     numbersInAWord.push(n);
-    counter.reset();
   }
   console.log(
     word + " ",

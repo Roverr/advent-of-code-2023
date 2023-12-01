@@ -20,7 +20,7 @@ module.exports = class Counter {
       if (phrase[count] === letter) {
         return { count: count + 1, phrase };
       }
-      if (phrase[0] === letter) {
+      if (count === 1 && phrase[0] === letter) {
         return { count: 1, phrase };
       }
       return { count: 0, phrase };
@@ -28,6 +28,7 @@ module.exports = class Counter {
     for (let i = 0; i < this.phrases.length; i++) {
       const { count, phrase } = this.phrases[i];
       if (count === phrase.length) {
+        this.phrases[i].count = 0;
         return i + 1;
       }
     }
