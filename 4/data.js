@@ -190,16 +190,26 @@ Card 189:  6 73 64  8 38 87 46 22 49 90 |  8 17 62 47 59 24  9 95 46 81 41 35 40
 Card 190: 26 75 89 96 83 78 16  3 45 97 | 32 73 53 21 65 25 17 58 51 49 84 24 96 40 35 20  7 77 64 97 67 99 61 52 46
 Card 191: 15 47 16 32 63 94 33 85 74 26 | 14 43 66  6 92  7 10 22 88  1 29 91 64 84 83 48 42 54 60 35 96 82 49  9 90
 Card 192: 29 68 86 19 93 50 55  5 12 41 | 83 36 30 69 40 16 38 54 99 61 21 79 81 41 65  3 26 27 31 35 39  8 25 49 70
-Card 193: 53 40  5 39 13 12 27 57 68 45 | 67 10 87 64 22  6 77 17 20 24 78 52 19 18 99 88 66 31 65 47 11 61 90  9 92`
+Card 193: 53 40  5 39 13 12 27 57 68 45 | 67 10 87 64 22  6 77 17 20 24 78 52 19 18 99 88 66 31 65 47 11 61 90  9 92`;
 
-module.exports.cards = data.split('\n').map((v, i) => {
-    const [_, game] = v.split(':');
-    const [winningNumbersString, playedNumbersString] = game.split('|')
-    const [winningNumbers, playedNumbers] = [
-        winningNumbersString.replaceAll(' ', ',').split(',').filter(v => v !== '').map(v => Number(v))
-        ,
-        playedNumbersString.replaceAll(' ', ',').split(',').filter(v => v !== '').map(v => Number(v))
-    ];
-    
-    return { id: i + 1, numbers: { played: playedNumbers, winning: winningNumbers }};
+module.exports.cards = data.split("\n").map((v, i) => {
+  const [_, game] = v.split(":");
+  const [winningNumbersString, playedNumbersString] = game.split("|");
+  const [winningNumbers, playedNumbers] = [
+    winningNumbersString
+      .replaceAll(" ", ",")
+      .split(",")
+      .filter((v) => v !== "")
+      .map((v) => Number(v)),
+    playedNumbersString
+      .replaceAll(" ", ",")
+      .split(",")
+      .filter((v) => v !== "")
+      .map((v) => Number(v)),
+  ];
+
+  return {
+    id: i + 1,
+    numbers: { played: playedNumbers, winning: winningNumbers },
+  };
 });
