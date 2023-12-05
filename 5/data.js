@@ -253,9 +253,20 @@ class Converter {
     }
     return sourceTarget;
   }
+  reverseConvert(targetTarget) {
+    for (let map of this.input) {
+      const [target, source, range] = map;
+      if (targetTarget >= target && targetTarget <= target + range) {
+        const diff = Math.abs(source - target);
+        return target < source ? targetTarget + diff : targetTarget - diff;
+      }
+    }
+    return targetTarget;
+  }
 }
 
 const almanac = {
+  part2Seeds: [],
   seeds: [],
   seedToSoil: new Converter("seedToSoil", []),
   soilToFertilizer: new Converter("soilToFertalizer", []),
@@ -275,6 +286,15 @@ for (let i = 0; i < raw.length; i++) {
       .pop()
       .split(" ")
       .map((v) => Number(v));
+
+    let value = -1;
+    for (let i = 0; i < almanac.seeds.length; i++) {
+      if (i % 2 === 0) {
+        value = almanac.seeds[i];
+        continue;
+      }
+      almanac.part2Seeds.push([value, almanac.seeds[i]]);
+    }
     continue;
   }
   if (raw[i] === "seed-to-soil map:") {
