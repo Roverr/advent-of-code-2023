@@ -1,7 +1,7 @@
-const { races } = require("./data");
+const { races, part2Races } = require("./data");
 
 const main = () => {
-  const validSolutions = new Map();
+  let validSolutions = new Map();
   for (let i = 0; i < races.time.length; i++) {
     validSolutions.set(i, []);
     const record = races.distance[i];
@@ -26,7 +26,17 @@ const main = () => {
   for (let key of validSolutions.keys()) {
     result = result * validSolutions.get(key).length;
   }
-  console.log(result);
+  console.log(`Part 1: ${result}`);
+
+  validSolutions = 0;
+  let iterator = 0;
+  while (iterator < (part2Races.time / 2)) {
+    iterator++;
+    if (iterator*(part2Races.time - iterator) > part2Races.distance) {
+        validSolutions++;
+    }
+  }
+  console.log(`Part 2: ${validSolutions*2 + (part2Races.time % 2)}`)
 };
 
 main();
