@@ -90,136 +90,43 @@ const fiveOfAKinds = calculatedHands
       b.tracker.findIndex(({ count }) => count === 5)
   );
 
+const sorter = (a, b) => {
+  const aIndexes = [];
+  const bIndexes = [];
+  for (let i = 0; i < a.hand.length; i++) {
+    aIndexes.push(a.tracker.findIndex(({ key }) => key === a.hand[i]));
+    bIndexes.push(b.tracker.findIndex(({ key }) => key === b.hand[i]));
+  }
+  for (let i = 0; i < aIndexes.length; i++) {
+    if (aIndexes[i] === bIndexes[i]) continue;
+    return aIndexes[i] - bIndexes[i];
+  }
+  return 0;
+};
 const fourOfAKinds = calculatedHands
   .filter(({ strength }) => strength === 1)
-  .sort((a, b) => {
-    const aPrimary = a.tracker.findIndex(({ count }) => count === 4);
-    const bPrimary = b.tracker.findIndex(({ count }) => count === 4);
-    if (aPrimary === bPrimary) {
-      return (
-        a.tracker.findIndex(({ count }) => count === 1) -
-        b.tracker.findIndex(({ count }) => count === 1)
-      );
-    }
-    return aPrimary - bPrimary;
-  });
+  .sort(sorter);
 
 const fullHouses = calculatedHands
   .filter(({ strength }) => strength === 2)
-  .sort((a, b) => {
-    const aPrimary = a.tracker.findIndex(({ count }) => count === 3);
-    const bPrimary = b.tracker.findIndex(({ count }) => count === 3);
-    if (aPrimary === bPrimary) {
-      return (
-        a.tracker.findIndex(({ count }) => count === 2) -
-        b.tracker.findIndex(({ count }) => count === 2)
-      );
-    }
-    return aPrimary - bPrimary;
-  });
+  .sort(sorter);
 
 const threeOfAKinds = calculatedHands
   .filter(({ strength }) => strength === 3)
-  .sort((a, b) => {
-    const aPrimary = a.tracker.findIndex(({ count }) => count === 3);
-    const bPrimary = b.tracker.findIndex(({ count }) => count === 3);
-    if (aPrimary === bPrimary) {
-      const aSecondary = a.tracker.findIndex(({ count }) => count === 1);
-      const bSecondary = b.tracker.findIndex(({ count }) => count === 1);
-      if (aSecondary === bSecondary) {
-        return (
-          a.tracker.findIndex(
-            ({ count, key }) => count === 1 && key !== a.tracker[aSecondary].key
-          ) -
-          b.tracker.findIndex(
-            ({ count, key }) => count === 1 && key !== b.tracker[bSecondary].key
-          )
-        );
-      }
-      return aSecondary - bSecondary;
-    }
-    return aPrimary - bPrimary;
-  });
+  .sort(sorter);
 
 const twoPairs = calculatedHands
   .filter(({ strength }) => strength === 4)
-  .sort((a, b) => {
-    const aPrimary = a.tracker.findIndex(({ count }) => count === 2);
-    const bPrimary = b.tracker.findIndex(({ count }) => count === 2);
-    if (aPrimary === bPrimary) {
-      const aSecondary = a.tracker.findIndex(
-        ({ count, key }) => count === 2 && key !== a.tracker[aPrimary].key
-      );
-      const bSecondary = b.tracker.findIndex(
-        ({ count, key }) => count === 2 && key !== b.tracker[bPrimary].key
-      );
-      if (aSecondary === bSecondary) {
-        return (
-          a.tracker.findIndex(({ count }) => count === 1) -
-          b.tracker.findIndex(({ count }) => count === 1)
-        );
-      }
-      return aSecondary - bSecondary;
-    }
-    return aPrimary - bPrimary;
-  });
+  .sort(sorter);
 
 const onePairs = calculatedHands
   .filter(({ strength }) => strength === 5)
-  .sort((a, b) => {
-    const aPrimary = a.tracker.findIndex(({ count }) => count === 2);
-    const bPrimary = b.tracker.findIndex(({ count }) => count === 2);
-    if (aPrimary === bPrimary) {
-      const aSecondary = a.tracker.findIndex(({ count }) => count === 1);
-      const bSecondary = b.tracker.findIndex(({ count }) => count === 1);
-      if (aSecondary === bSecondary) {
-        const aTertiary = a.tracker.findIndex(
-          ({ count, key }) => count === 1 && key !== a.tracker[aSecondary].key
-        );
-        const bTertiary = b.tracker.findIndex(
-          ({ count, key }) => count === 1 && key !== b.tracker[bSecondary].key
-        );
-        if (aTertiary === bTertiary) {
-          const aQuaternary = a.tracker.findIndex(
-            ({ count, key }) =>
-              count === 1 &&
-              ![a.tracker[aSecondary], a.tracker[aTertiary]].includes(key)
-          );
-          const bQuaternary = b.tracker.findIndex(
-            ({ count, key }) =>
-              count === 1 &&
-              ![b.tracker[bSecondary], b.tracker[bTertiary]].includes(key)
-          );
-          return aQuaternary - bQuaternary;
-        }
-        return aTertiary - bTertiary;
-      }
-      return aSecondary - bSecondary;
-    }
-    return aPrimary - bPrimary;
-  });
+  .sort(sorter);
 
 const highCards = calculatedHands
   .filter(({ strength }) => strength === 6)
-  .sort((a, b) => {
-    const aIndexes = [];
-    const bIndexes = [];
-    for (let i = 0; i < a.tracker.length; i++) {
-      if (a.tracker[i].count > 0) {
-        aIndexes.push(i);
-      }
-      if (b.tracker[i].count > 0) {
-        bIndexes.push(i);
-      }
-    }
-    for (let i = 0; i < aIndexes.length; i++) {
-      if (aIndexes[i] === bIndexes[i]) continue;
-      return aIndexes[i] - bIndexes[i];
-    }
-    return 0;
-  });
+  .sort(sorter);
 
-/// 257 511 924 - 255 938 683
 const sortedHands = [
   ...fiveOfAKinds,
   ...fourOfAKinds,
@@ -235,4 +142,4 @@ const sum = sortedHands.reduce(
   0
 );
 
-console.log(sum);
+console.log(`Part 1: ${sum}`);
