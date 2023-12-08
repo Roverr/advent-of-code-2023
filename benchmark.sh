@@ -14,9 +14,8 @@ execute () {
       --min-runs 10 \
       --max-runs 300 \
       --command-name $1 \
-      --setup 'make clean prepare' \
       --prepare 'sync;' \
-      'make execute'
+      'node index.js'
   )
   echo " "
 }
