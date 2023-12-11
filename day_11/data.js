@@ -168,16 +168,17 @@ for (let [key, value] of columnChecker) {
 }
 
 let i = 0;
+let part1Map = splitted;
 for (let rowIndex of rowsWithoutGalaxies) {
-  splitted = [
-    ...splitted.slice(0, rowIndex + i),
-    splitted[rowIndex + i],
-    ...splitted.slice(rowIndex + i),
+  part1Map = [
+    ...part1Map.slice(0, rowIndex + i),
+    part1Map[rowIndex + i],
+    ...part1Map.slice(rowIndex + i),
   ];
   i++;
 }
 
-splitted = splitted.map((row) => {
+part1Map = part1Map.map((row) => {
   let i = 0;
   let raw = row.split("");
   for (let columnIndex of columnsWithoutGalaxies) {
@@ -191,19 +192,37 @@ splitted = splitted.map((row) => {
   return raw.join("");
 });
 
-const uniques = [];
+const part1Uniques = [];
 let counter = -1;
-const matrixedData = splitted.map((row, i) =>
+const part1MatrixedData = part1Map.map((row, i) =>
   row.split("").map((c, y) => {
     if (c === ".") return c;
     counter++;
-    uniques.push({ row: i, column: y, value: counter });
+    part1Uniques.push({ row: i, column: y, value: counter });
+    return counter;
+  })
+);
+
+counter = -1;
+const part2Uniques = [];
+const part2MatrixedData = splitted.map((row, i) =>
+  row.split("").map((c, y) => {
+    if (c === ".") return c;
+    counter++;
+    part2Uniques.push({ row: i, column: y, value: counter });
     return counter;
   })
 );
 
 module.exports.galaxyMap = {
-  raw: splitted,
-  matrixed: matrixedData,
-  uniques,
+  part1: {
+    matrixed: part1MatrixedData,
+    uniques: part1Uniques,
+  },
+  part2: {
+    matrixed: part2MatrixedData,
+    uniques: part2Uniques,
+    rowsWithoutGalaxies,
+    columnsWithoutGalaxies,
+  },
 };
