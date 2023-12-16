@@ -66,7 +66,6 @@ const main = () => {
       if (energizedMap[row][column].value === "#") {
         if (energizedMap[row][column].directions.includes(direction)) {
           done = true;
-          console.log("Circular detected");
           break;
         }
       } else {
@@ -157,7 +156,7 @@ const main = () => {
             case DIRECTIONS.LEFT:
               if (row === 0) {
                 done = true;
-                return { path: route, moreToExplore: [] };
+                return { moreToExplore: [] };
               }
               direction = DIRECTIONS.UP;
               row--;
@@ -165,7 +164,7 @@ const main = () => {
             case DIRECTIONS.RIGHT:
               if (row + 1 >= beams.length) {
                 done = true;
-                return { path: route, moreToExplore: [] };
+                return { moreToExplore: [] };
               }
               direction = DIRECTIONS.DOWN;
               row++;
@@ -173,7 +172,7 @@ const main = () => {
             case DIRECTIONS.UP:
               if (column === 0) {
                 done = true;
-                return { path: route, moreToExplore: [] };
+                return { moreToExplore: [] };
               }
               direction = DIRECTIONS.LEFT;
               column--;
@@ -181,7 +180,7 @@ const main = () => {
             case DIRECTIONS.DOWN:
               if (column + 1 === beams[row].length) {
                 done = true;
-                return { path: route, moreToExplore: [] };
+                return { moreToExplore: [] };
               }
               direction = DIRECTIONS.RIGHT;
               column++;
@@ -193,7 +192,7 @@ const main = () => {
             case DIRECTIONS.LEFT:
               if (row + 1 >= beams.length) {
                 done = true;
-                return { path: route, moreToExplore: [] };
+                return { moreToExplore: [] };
               }
               direction = DIRECTIONS.DOWN;
               row++;
@@ -201,7 +200,7 @@ const main = () => {
             case DIRECTIONS.RIGHT:
               if (row === 0) {
                 done = true;
-                return { path: route, moreToExplore: [] };
+                return { moreToExplore: [] };
               }
               direction = DIRECTIONS.UP;
               row--;
@@ -209,7 +208,7 @@ const main = () => {
             case DIRECTIONS.UP:
               if (column + 1 === beams[row].length) {
                 done = true;
-                return { path: route, moreToExplore: [] };
+                return { moreToExplore: [] };
               }
               direction = DIRECTIONS.RIGHT;
               column++;
@@ -217,7 +216,7 @@ const main = () => {
             case DIRECTIONS.DOWN:
               if (column === 0) {
                 done = true;
-                return { path: route, moreToExplore: [] };
+                return { moreToExplore: [] };
               }
               direction = DIRECTIONS.LEFT;
               column--;
@@ -226,33 +225,26 @@ const main = () => {
           break;
       }
     }
-    return { path: route, moreToExplore: [] };
+    return { moreToExplore: [] };
   };
 
-  const paths = [];
   let needsExploration = [{ row: 0, column: 0, direction: DIRECTIONS.RIGHT }];
   while (needsExploration.length > 0) {
     const { row, column, direction } = needsExploration.pop();
-    const { path, moreToExplore } = explore(row, column, direction);
+    const { moreToExplore } = explore(row, column, direction);
     if (moreToExplore.length > 0) {
       needsExploration = needsExploration.concat(moreToExplore);
     }
-    paths.push({
-      row,
-      column,
-      direction,
-      path,
-    });
   }
 
   let sum = energizedMap.reduce((sum, row) => {
-    return sum + row.filter(({ value }) => value === "#").length
-  },0)
+    return sum + row.filter(({ value }) => value === "#").length;
+  }, 0);
   console.log(`Part 1: ${sum}`);
 
   fs.writeFileSync(
     "./day_16/output",
-    energizedMap.map(row => row.map(({ value }) => value).join('')).join("\n")
+    energizedMap.map((row) => row.map(({ value }) => value).join("")).join("\n")
   );
 };
 
