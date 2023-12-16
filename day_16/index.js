@@ -17,13 +17,11 @@ const ELEMENT_TYPES = Object.freeze({
 });
 
 const main = () => {
-  const energizedMap = beams.map((row, i) =>
-    row.split("").map((_, y) => ({ value: ".", directions: [] }))
-  );
   const explore = (
     startRow = 0,
     startColumn = 0,
-    startDirection = DIRECTIONS.RIGHT
+    startDirection = DIRECTIONS.RIGHT,
+    energizedMap
   ) => {
     const route = [];
     let row = startRow;
@@ -227,17 +225,23 @@ const main = () => {
     }
     return { moreToExplore: [] };
   };
-
   let needsExploration = [{ row: 0, column: 0, direction: DIRECTIONS.RIGHT }];
-  while (needsExploration.length > 0) {
-    const { row, column, direction } = needsExploration.pop();
-    const { moreToExplore } = explore(row, column, direction);
-    if (moreToExplore.length > 0) {
-      needsExploration = needsExploration.concat(moreToExplore);
+  const walkIt = (needsExploration, energizedMap) => {
+    while (needsExploration.length > 0) {
+      const { row, column, direction } = needsExploration.pop();
+      const { moreToExplore } = explore(row, column, direction, energizedMap);
+      if (moreToExplore.length > 0) {
+        needsExploration = needsExploration.concat(moreToExplore);
+      }
     }
-  }
-
-  let sum = energizedMap.reduce((sum, row) => {
+    return energizedMap;
+  };
+  const getEnergizedMap = () =>
+    beams.map((row) =>
+      row.split("").map((_) => ({ value: ".", directions: [] }))
+    );
+  let energizedMap = getEnergizedMap();
+  let sum = walkIt(needsExploration, energizedMap).reduce((sum, row) => {
     return sum + row.filter(({ value }) => value === "#").length;
   }, 0);
   console.log(`Part 1: ${sum}`);
@@ -246,6 +250,46 @@ const main = () => {
     "./day_16/output",
     energizedMap.map((row) => row.map(({ value }) => value).join("")).join("\n")
   );
+
+  let maxSum = sum;
+  [DIRECTIONS.RIGHT, DIRECTIONS.LEFT].forEach((direction) => {
+    for (let i = 0; i < beams.length; i++) {
+      needsExploration = [
+        {
+          row: i,
+          column: direction === DIRECTIONS.RIGHT ? 0 : beams[i].length - 1,
+          direction: direction,
+        },
+      ];
+      energizedMap = getEnergizedMap();
+      sum = walkIt(needsExploration, energizedMap).reduce((sum, row) => {
+        return sum + row.filter(({ value }) => value === "#").length;
+      }, 0);
+      if (sum > maxSum) {
+        maxSum = sum;
+      }
+    }
+  });
+  [DIRECTIONS.UP, DIRECTIONS.DOWN].forEach((direction) => {
+    for (let i = 0; i < beams[0].length; i++) {
+      needsExploration = [
+        {
+          row: direction === DIRECTIONS.DOWN ? 0 : beams.length - 1,
+          column: i,
+          direction: direction,
+        },
+      ];
+      energizedMap = getEnergizedMap();
+      sum = walkIt(needsExploration, energizedMap).reduce((sum, row) => {
+        return sum + row.filter(({ value }) => value === "#").length;
+      }, 0);
+      if (sum > maxSum) {
+        console.log(sum, maxSum);
+        maxSum = sum;
+      }
+    }
+  });
+  console.log(`Part 2: ${maxSum}`);
 };
 
 main();
